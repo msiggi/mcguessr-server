@@ -10,7 +10,7 @@ const timerEl = document.getElementById("timer");
 const realMarker = document.getElementById("realMarker");
 const line = document.getElementById("line");
 const mapContainer = document.getElementById("mapContainer");
-
+const bigScore = document.getElementById("bigScore");
 const bossbarFill = document.getElementById("bossbar-fill");
 const multiplayerBtn = document.getElementById("multiplayerBtn");
 const startBtn = document.getElementById("startBtn");
@@ -27,6 +27,17 @@ let round = 0;
 let totalScore = 0;
 const maxRounds = 3;
 let playerName = "";
+let scoreSent = false;
+
+  skinPreview.src = "images/default-skin.webp";
+
+document.getElementById("backBtn").onclick = () => {
+  document.getElementById("endScreen").style.display = "none";
+  startScreen.style.display = "block";
+
+  round = 0;
+  totalScore = 0;
+};
 
 //Skin
 usernameInput.addEventListener("input", () => {
@@ -34,15 +45,14 @@ usernameInput.addEventListener("input", () => {
 
   if (!name) return;
 
-  // 🔥 HEAD render (perfekt für UI)
-
 skinPreview.src = `https://minotar.net/helm/${name}/100.png`;});
 
 startBtn.onclick = () => {
   const name = usernameInput.value.trim();
+  let scoreSent = false;
 
   if (!name) {
-    alert("Bitte Username eingeben!");
+    alert("Please enter your Minecraft username!");
     return;
   }
 
@@ -68,40 +78,41 @@ startBtn.onclick = () => {
     alert("No Multiplayer avaible at this time");
 
 }
+document.getElementById("wieBtn").onclick = function () {
+  document.getElementById("popup").style.display = "block";
+};
 //Leaderboard
 async function loadLeaderboard() {
-  const res = await fetch(SERVER_URL + "/leaderboard");
+  console.log("Loading leaderboard...");
+
+  const res = await fetch(`${SERVER_URL}/score`);
   const data = await res.json();
 
   const board = document.getElementById("leaderboardList");
   board.innerHTML = "";
 
-  data.forEach((entry, index) => {
-    let medal = "";
-    let extraClass = "";
+  data
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10)
+    .forEach((entry, index) => {
+      let medal = "";
+      let extraClass = "";
 
-    if (index === 0) {
-      medal = "🥇";
-      extraClass = "gold";
-    } else if (index === 1) {
-      medal = "🥈";
-      extraClass = "silver";
-    } else if (index === 2) {
-      medal = "🥉";
-      extraClass = "bronze";
-    }
+      if (index === 0) { medal = "🥇"; extraClass = "gold"; }
+      else if (index === 1) { medal = "🥈"; extraClass = "silver"; }
+      else if (index === 2) { medal = "🥉"; extraClass = "bronze"; }
 
-    const skin = `https://minotar.net/helm/${entry.name}/30.png`;
+      const skin = `https://minotar.net/helm/${entry.name}/30.png`;
 
-    board.innerHTML += `
-      <div class="lb-entry ${extraClass}">
-        <span class="rank">${medal}</span>
-        <img class="lb-skin" src="${skin}">
-        <span class="name">${entry.name}</span>
-        <span class="score">${entry.score}</span>
-      </div>
-    `;
-  });
+      board.innerHTML += `
+        <div class="lb-entry ${extraClass}">
+          <span class="rank">${medal}</span>
+          <img src="${skin}" class="lb-skin">
+          <span class="name">${entry.name}</span>
+          <span class="score">${entry.score}</span>
+        </div>
+      `;
+    });
 }
 
 let maxTime = 30;
@@ -152,7 +163,27 @@ const locations = [
   { image: "images/bild27.png", x: 0.087, y: 0.576 },
   { image: "images/bild28.png", x: 0.314, y: 0.338 },
   { image: "images/bild29.png", x: 0.319, y: 0.868 },
-  { image: "images/bild30.png", x: 0.643, y: 0.711 }
+  { image: "images/bild30.png", x: 0.643, y: 0.711 },
+  { image: "images/bild31.png", x: 0.456, y: 0.976 },
+  { image: "images/bild32.png", x: 0.716, y: 0.105 },
+  { image: "images/bild33.png", x: 0.475, y: 0.651 },
+  { image: "images/bild34.png", x: 0.401, y: 0.881 },
+  { image: "images/bild35.png", x: 0.184, y: 0.933 },
+  { image: "images/bild36.png", x: 0.052, y: 0.160 },
+  { image: "images/bild37.png", x: 0.808, y: 0.212 },
+  { image: "images/bild38.png", x: 0.087, y: 0.337 },
+  { image: "images/bild39.png", x: 0.588, y: 0.830 },
+  { image: "images/bild40.png", x: 0.254, y: 0.402 },
+  { image: "images/bild41.png", x: 0.082, y: 0.916 },
+  { image: "images/bild42.png", x: 0.246, y: 0.959 },
+  { image: "images/bild43.png", x: 0.860, y: 0.837 },
+  { image: "images/bild44.png", x: 0.030, y: 0.446 },
+  { image: "images/bild45.png", x: 0.208, y: 0.066 },
+  { image: "images/bild46.png", x: 0.052, y: 0.673 },
+  { image: "images/bild47.png", x: 0.929, y: 0.325 },
+  { image: "images/bild48.png", x: 0.822, y: 0.902 },
+  { image: "images/bild49.png", x: 0.794, y: 0.571 },
+  { image: "images/bild50.png", x: 0.442, y: 0.192 }
 
 ];
 
@@ -164,7 +195,7 @@ function loadRandomLocation() {
   screenshot.src = currentLocation.image;
   mapContainer.classList.remove("fullscreen");
 
-  // 🔥 Marker reset
+  // Marker reset
   marker.style.display = "none";
   realMarker.style.display = "none";
   line.style.display = "none";
@@ -172,14 +203,14 @@ function loadRandomLocation() {
   guessX = null;
   guessY = null;
 
-  // 🔥 MAP RESET
+  // MAP RESET
   zoom = 0.9;
   offsetX = 0;
   offsetY = 0;
 
   updateTransform();
 
-  // 🔥 Timer neu starten
+  // Timer neu starten
   startTimer();
 }
 //nach guess
@@ -206,6 +237,10 @@ function drawLine(x1, y1, x2, y2) {
   line.style.transform = `rotate(${angle}deg)`;
 
   line.style.display = "block";
+
+setTimeout(() => {
+  line.style.opacity = "1";
+}, 10);;
 }
 
 function showResult() {
@@ -358,11 +393,13 @@ guessBtn.onclick = () => {
   result.innerText =
     `Runde ${round}/3 | Punkte: ${score}`;
 
-  showResult();
+showResult();
 
-  setTimeout(() => {
+bigScore.innerText = "+" + score;
+bigScore.style.display = "block";
 
-  // 🔥 RESULT VIEW ZURÜCKSETZEN
+setTimeout(() => {
+
   mapContainer.classList.remove("fullscreen");
   realMarker.style.display = "none";
   line.style.display = "none";
@@ -377,21 +414,30 @@ guessBtn.onclick = () => {
 };
 //ENDE
 function endGame() {
-  result.innerText = `GESAMT: ${totalScore} Punkte`;
+  sendScore(playerName, totalScore);
 
-  sendScore(playerName, totalScore); 
+  // UI wechseln
+  game.style.display = "none";
+  document.getElementById("endScreen").style.display = "flex";
 
-  setTimeout(() => {
-    round = 0;
-    totalScore = 0;
+  // Score anzeigen
+  document.getElementById("finalScore").innerText = totalScore + " Punkte";
 
-    startScreen.style.display = "block";
-    game.style.display = "none";
-
-    loadLeaderboard();
-  }, 4000);
+  // Leaderboard aktualisieren
+  loadLeaderboard();
 }
 
+async function sendScore(name, score) {
+  console.log("Sende Score an Render:", name, score);
+
+  await fetch(`${SERVER_URL}/leaderboard`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ name, score })
+  });
+}
 // -------------------- ZOOM --------------------
 mapViewport.addEventListener("wheel", (e) => {
   e.preventDefault();
@@ -413,33 +459,8 @@ mapViewport.addEventListener("wheel", (e) => {
   updateTransform();
 });
 
-async function sendScore(name, score) {
-  console.log("Sende Score:", name, score);
-
-  await fetch(SERVER_URL + "/score", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ name, score })
-  });
-}
-
-function sendScore() {
-  console.log("Sende Score:", playerName, totalScore); // 👈 DEBUG
-
-  fetch("https://mcguessr-server.onrender.com/score", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      name: playerName,
-      score: totalScore
-    })
-  });
-}
-
 window.onload = () => {
   loadLeaderboard();
+  setInterval(loadLeaderboard, 30000);
+
 };

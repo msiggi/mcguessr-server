@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Minecraft GeoGuessr</title>
   <link rel="stylesheet" href="mcguessr.css">
 </head>
@@ -10,9 +10,14 @@
 <!-- START SCREEN -->
 <div id="startScreen">
   
-<div id="leaderboard">
-  <h3>Leaderboard</h3>
-  <div id="leaderboardList"></div>
+<div id="creator">
+  <h2>The Creator</h2>
+    <img src="images/Profilbild.png" alt="Kilior" id="profilbild">
+  <a href="https://www.youtube.com/@kilior-yt" target="_blank" id="youtubeLink">YouTube</a>
+  <a href="https://www.twitch.tv/kilioryt" target="_blank" id="twitchLink">Twitch</a>
+  <a href="https://discord.gg/wCfe2PkcW6" target="_blank" id="dcLink">Discord</a>
+
+
 </div>
 
   <!-- LINKS -->
@@ -20,12 +25,21 @@
     <img id="skinPreview" src="" alt="Skin">
     <input id="usernameInput" placeholder="Minecraft Username">
   </div>
-
+<div class="three">
+ 
+     <img src="images/logo.png" alt="Earth" id="Icon">
+     <h1>Minecraft GeoGuessr</h1>
+</div>
   <!-- RECHTS -->
   <div id="titleBlock">
-    <h1>Minecraft GeoGuessr</h1>
     <button id="startBtn">Singleplayer</button>
     <button id="multiplayerBtn">Multiplayer</button>
+    <button id="wieBtn">How to Play</button>
+<div id="popup">
+  <a href="https://www.youtube.com/@kilior-yt" target="_blank" id="youtubeLink">YouTube-Video</a>
+  <br><br>
+  <button onclick="document.getElementById('popup').style.display='none'">Close</button>
+</div>
   </div>
 
 </div>
@@ -65,8 +79,16 @@
 
   <!-- UI -->
   <p id="result"></p>
-  <p id="coords"></p>
+ <!-- <p id="coords"></p>  WICHTIG  -->
 
+</div>
+
+<div id="endScreen" style="display:none;">
+  <div id="endBox">
+    <h1>Game Over</h1>
+    <div id="finalScore"></div>
+    <button id="backBtn">Zurück zum Menü</button>
+  </div>
 </div>
 
 <script src="mcguessr.js"></script>
