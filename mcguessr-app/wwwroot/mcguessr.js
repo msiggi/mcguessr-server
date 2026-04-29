@@ -28,22 +28,27 @@ const maxRounds = 3;
 let playerName = "";
 let scoreSent = false;
 
-skinPreview.src = "images/default-skin.webp";
+  skinPreview.src = "images/default-skin.webp";
 
 const isMobile = () => window.innerWidth <= 768;
 
 document.getElementById("backBtn").onclick = () => {
   document.getElementById("endScreen").style.display = "none";
   startScreen.style.display = "block";
+
   round = 0;
   totalScore = 0;
 };
 
+//Skin
 usernameInput.addEventListener("input", () => {
   const name = usernameInput.value.trim();
+
   if (!name) return;
   skinPreview.src = `https://minotar.net/helm/${name}/100.png`;
 });
+
+skinPreview.src = `https://minotar.net/helm/${name}/100.png`;});
 
 startBtn.onclick = () => {
   const name = usernameInput.value.trim();
@@ -55,6 +60,7 @@ startBtn.onclick = () => {
   }
 
   playerName = name;
+
   playerSkin.src = `https://minotar.net/helm/${name}/40.png`;
   playerNameEl.innerText = name;
 
@@ -69,16 +75,20 @@ startBtn.onclick = () => {
   loadRandomLocation();
 };
 
-multiplayerBtn.onclick = () => {
-  alert("No Multiplayer avaible at this time");
+  multiplayerBtn.onclick = () => {
+  const name = usernameInput.value.trim();
+
+    alert("No Multiplayer avaible at this time");
 };
 
+}
 document.getElementById("wieBtn").onclick = function () {
   document.getElementById("popup").style.display = "block";
 };
 
 async function loadLeaderboard() {
   console.log("Loading leaderboard...");
+
   const res = await fetch(`${SERVER_URL}/leaderboard`);
   const data = await res.json();
 
@@ -98,6 +108,7 @@ async function loadLeaderboard() {
       else if (index === 2) { medal = "🥉"; extraClass = "bronze"; }
 
       const skin = `https://minotar.net/helm/${entry.name}/30.png`;
+
       board.innerHTML += `
         <div class="lb-entry ${extraClass}">
           <span class="rank">${medal}</span>
@@ -178,16 +189,19 @@ const locations = [
   { image: "images/bild48.png", x: 0.822, y: 0.902 },
   { image: "images/bild49.png", x: 0.794, y: 0.571 },
   { image: "images/bild50.png", x: 0.442, y: 0.192 }
+
 ];
 
 let currentLocation;
 
+// -------------------- LOAD --------------------
 function loadRandomLocation() {
   currentLocation = locations[Math.floor(Math.random() * locations.length)];
   screenshot.src = currentLocation.image;
   mapContainer.classList.remove("fullscreen");
   mapContainer.classList.remove("expanded");
 
+  // Marker reset
   marker.style.display = "none";
   realMarker.style.display = "none";
   line.style.display = "none";
@@ -195,11 +209,14 @@ function loadRandomLocation() {
   guessX = null;
   guessY = null;
 
+  // MAP RESET
   zoom = 0.9;
   offsetX = 0;
   offsetY = 0;
 
   updateTransform();
+
+  // Timer neu starten
   startTimer();
 }
 
@@ -207,13 +224,16 @@ function drawLine(x1, y1, x2, y2) {
   const mapWidth = map.offsetWidth;
   const mapHeight = map.offsetHeight;
 
+  // Positionen in "Map-Koordinaten" (nicht Screen!)
   const px1 = x1 * mapWidth;
   const py1 = y1 * mapHeight;
+
   const px2 = x2 * mapWidth;
   const py2 = y2 * mapHeight;
 
   const dx = px2 - px1;
   const dy = py2 - py1;
+
   const length = Math.sqrt(dx * dx + dy * dy);
   const angle = Math.atan2(dy, dx) * (180 / Math.PI);
 
@@ -221,24 +241,31 @@ function drawLine(x1, y1, x2, y2) {
   line.style.left = px1 + "px";
   line.style.top = py1 + "px";
   line.style.transform = `rotate(${angle}deg)`;
+
   line.style.display = "block";
 
   setTimeout(() => { line.style.opacity = "1"; }, 10);
 }
 
 function showResult() {
+  // Map groß machen
   mapContainer.classList.add("fullscreen");
 
+  // echte Position berechnen
   const realX = currentLocation.x;
   const realY = currentLocation.y;
 
+  // Marker setzen
   realMarker.style.left = (realX * 100) + "%";
   realMarker.style.top  = (realY * 100) + "%";
   realMarker.style.display = "block";
 
+  // Linie berechnen
   drawLine(guessX, guessY, realX, realY);
 }
 
+
+// -------------------- TRANSFORM --------------------
 function updateTransform() {
   const vp = mapViewport.getBoundingClientRect();
 
@@ -289,12 +316,15 @@ mapViewport.addEventListener("click", (e) => {
 // -------------------- TIMER --------------------
 function startTimer() {
   clearInterval(timerInterval);
+
   timeLeft = maxTime;
   updateBossbar();
 
   timerInterval = setInterval(() => {
     timeLeft--;
+
     updateBossbar();
+
     if (timeLeft <= 0) {
       clearInterval(timerInterval);
       autoSubmit();
@@ -306,6 +336,7 @@ function updateBossbar() {
   const percent = (timeLeft / maxTime) * 100;
   bossbarFill.style.width = percent + "%";
 
+  // Farbwechsel
   if (percent > 50) {
     bossbarFill.style.background = "linear-gradient(to right, #a000ff, #ff00ff)";
   } else if (percent > 20) {
@@ -321,6 +352,7 @@ function autoSubmit() {
     setTimeout(() => { loadRandomLocation(); }, 1500);
     return;
   }
+
   guessBtn.click();
 }
 
@@ -328,8 +360,10 @@ function autoSubmit() {
 mapWrapper.addEventListener("mousedown", (e) => {
   isDragging = true;
   moved = false;
+
   startX = e.clientX - offsetX;
   startY = e.clientY - offsetY;
+
   e.preventDefault();
 });
 
@@ -384,8 +418,8 @@ mapWrapper.addEventListener("touchmove", (e) => {
       Math.abs(e.touches[0].clientY - touchStartY) > dragThreshold
     ) moved = true;
 
-    offsetX = dx;
-    offsetY = dy;
+  offsetX = dx;
+  offsetY = dy;
     updateTransform();
   } else if (e.touches.length === 2) {
     const dist = getTouchDist(e);
@@ -401,7 +435,7 @@ mapWrapper.addEventListener("touchmove", (e) => {
     offsetX = midX - ((midX - offsetX) * (zoom / oldZoom));
     offsetY = midY - ((midY - offsetY) * (zoom / oldZoom));
 
-    updateTransform();
+  updateTransform();
     lastTouchDist = dist;
     moved = true;
   }
@@ -416,6 +450,7 @@ guessBtn.onclick = () => {
 
   const dx = guessX - currentLocation.x;
   const dy = guessY - currentLocation.y;
+
   const distance = Math.sqrt(dx * dx + dy * dy);
   const score = Math.max(0, 5000 - Math.floor(distance * 5000));
 
@@ -424,30 +459,38 @@ guessBtn.onclick = () => {
 
   result.innerText = `Runde ${round}/3 | Punkte: ${score}`;
 
-  showResult();
+showResult();
 
-  bigScore.innerText = "+" + score;
-  bigScore.style.display = "block";
+bigScore.innerText = "+" + score;
+bigScore.style.display = "block";
 
-  setTimeout(() => {
-    mapContainer.classList.remove("fullscreen");
+setTimeout(() => {
+
+  mapContainer.classList.remove("fullscreen");
     mapContainer.classList.remove("expanded");
-    realMarker.style.display = "none";
-    line.style.display = "none";
+  realMarker.style.display = "none";
+  line.style.display = "none";
 
-    if (round >= maxRounds) {
-      endGame();
-    } else {
-      loadRandomLocation();
-    }
-  }, 5000);
+  if (round >= maxRounds) {
+    endGame();
+  } else {
+    loadRandomLocation();
+  }
+
+}, 5000);
 };
 
 function endGame() {
   sendScore(playerName, totalScore);
+
+  // UI wechseln
   game.style.display = "none";
   document.getElementById("endScreen").style.display = "flex";
+
+  // Score anzeigen
   document.getElementById("finalScore").innerText = totalScore + " Punkte";
+
+  // Leaderboard aktualisieren
   loadLeaderboard();
 }
 
@@ -465,9 +508,11 @@ mapViewport.addEventListener("wheel", (e) => {
   e.preventDefault();
 
   const rect = mapViewport.getBoundingClientRect();
+
   const mouseX = e.clientX - rect.left;
   const mouseY = e.clientY - rect.top;
 
+  const zoomFactor = 1.1;
   const oldZoom = zoom;
   zoom *= (e.deltaY < 0) ? 1.1 : (1 / 1.1);
   zoom = Math.min(Math.max(zoom, 0.185), 5);
@@ -481,4 +526,5 @@ mapViewport.addEventListener("wheel", (e) => {
 window.onload = () => {
   loadLeaderboard();
   setInterval(loadLeaderboard, 30000);
+
 };

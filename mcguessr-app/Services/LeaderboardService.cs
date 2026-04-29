@@ -33,7 +33,7 @@ public class LeaderboardService : ILeaderboardService
     private List<LeaderboardEntry> LoadFromDisk()
     {
         if (!File.Exists(_filePath))
-        {
+    {
             File.WriteAllText(_filePath, "[]");
             return [];
         }
@@ -47,5 +47,6 @@ public class LeaderboardService : ILeaderboardService
             File.WriteAllText(_filePath, "[]");
             return [];
         }
+        finally { _lock.Release(); }
     }
 }
