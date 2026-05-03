@@ -1,35 +1,51 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
 trigger:
 - master
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: windows-latest
+
+variables:
+  project:  'mcguessr-app/McguesSr.csproj'
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
 
 steps:
-- task: NodeTool@0
-  displayName: 'Use Node.js 20.x'
+- task: UseDotNet@2
+  displayName: 'Use .NET Core 10 sdk'
   inputs:
-    versionSpec: '20.x'
+    packageType: 'sdk'
+    version: '10.0.x'
+    includePreviewVersions: false
 
-- script: npm ci
-  displayName: 'npm install'
-
-- task: CopyFiles@2
-  displayName: 'Copy files to staging'
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
   inputs:
-    Contents: |
-      server.js
-      package.json
-      package-lock.json
-      index.html
-      mcguessr.js
-      mcguessr.css
-      leaderboard.json
-      images/**
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    command: restore
+    projects: '$(project)'
+
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: '$(project)'
+    arguments: '--configuration $(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: Publish
+  inputs:
+    command: publish
+    publishWebProjects: false
+    projects: '$(project)'
+    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+    zipAfterPublish: false
+    modifyOutputPath: false
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact'
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
   condition: succeededOrFailed()
