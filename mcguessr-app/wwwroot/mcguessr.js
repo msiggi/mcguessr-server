@@ -48,7 +48,7 @@ usernameInput.addEventListener("input", () => {
   skinPreview.src = `https://minotar.net/helm/${name}/100.png`;
 });
 
-skinPreview.src = `https://minotar.net/helm/${name}/100.png`;});
+skinPreview.src = `https://minotar.net/helm/${name}/100.png`;
 
 startBtn.onclick = () => {
   const name = usernameInput.value.trim();
@@ -81,7 +81,6 @@ startBtn.onclick = () => {
     alert("No Multiplayer avaible at this time");
 };
 
-}
 document.getElementById("wieBtn").onclick = function () {
   document.getElementById("popup").style.display = "block";
 };
