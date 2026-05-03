@@ -81,6 +81,7 @@ startBtn.onclick = () => {
     alert("No Multiplayer avaible at this time");
 };
 
+}
 document.getElementById("wieBtn").onclick = function () {
   document.getElementById("popup").style.display = "block";
 };
@@ -390,7 +391,7 @@ function getTouchDist(e) {
   const dx = e.touches[0].clientX - e.touches[1].clientX;
   const dy = e.touches[0].clientY - e.touches[1].clientY;
   return Math.sqrt(dx * dx + dy * dy);
-}
+  }
 
 mapWrapper.addEventListener("touchstart", (e) => {
   if (e.touches.length === 1) {
