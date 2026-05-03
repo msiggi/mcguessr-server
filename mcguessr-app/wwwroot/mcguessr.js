@@ -81,7 +81,7 @@ startBtn.onclick = () => {
     alert("No Multiplayer avaible at this time");
 };
 
-}
+
 document.getElementById("wieBtn").onclick = function () {
   document.getElementById("popup").style.display = "block";
 };
